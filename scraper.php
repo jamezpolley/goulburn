@@ -4,7 +4,7 @@ require_once 'vendor/autoload.php';
 require_once 'vendor/openaustralia/scraperwiki/scraperwiki.php';
 
 use PGuardiario\PGBrowser;
-use Sunra\PhpSimple\HtmlDomParser;
+use Torann\DomParser\HtmlDom;
 date_default_timezone_set('Australia/Sydney');
 
 # Default to 'thisweek', use MORPH_PERIOD to change to 'thismonth' or 'lastmonth' for data recovery
@@ -34,7 +34,7 @@ if ( getenv('MORPH_PROXY') ) {
 }
 
 $page = $browser->get($da_page);
-$dom = HtmlDomParser::str_get_html($page->html);
+$dom = HtmlDom::fromString($page->html);
 
 # By default, assume it is single page, otherwise, calculate how many pages are there
 $NumPages = count($dom->find('tr[class=pagerRow] a'));
@@ -78,6 +78,6 @@ for ($i = 1; $i <= $NumPages; $i++) {
         $pagelink = $dom->find('tr[class=pagerRow] a', $i-1);
         $form = $page->form();
         $page = $form->doPostBack($pagelink->href);
-        $dom = HtmlDomParser::str_get_html($page->html);
+        $dom = HtmlDom::fromString($page->html);
     }
 }
